@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 
 .vscode/
+
+# Static
+dating_app/static/avatars/

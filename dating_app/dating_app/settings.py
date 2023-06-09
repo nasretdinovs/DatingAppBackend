@@ -18,6 +18,7 @@ ALLOWED_HOSTS = [
     os.getenv('PUBLIC_HOST', default='*'),
 ]
 
+AUTH_USER_MODEL = 'dating_backend.User'
 
 # Application definition
 
@@ -124,3 +125,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', default='user'),
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', default='password'),
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

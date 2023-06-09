@@ -39,3 +39,22 @@ class User(AbstractUser):
             )
         image.paste(watermark, watermark_position, watermark)
         image.save(self.avatar.path)
+
+    def check_mutual_sympathy(self, other_user):
+        return LikedUsers.objects.filter(
+            from_user=self, to_user=other_user).exists() and \
+               LikedUsers.objects.filter(
+            from_user=other_user, to_user=self).exists()
+
+
+class LikedUsers(models.Model):
+    from_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='liked_users_sent')
+    to_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='liked_users_received')
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
+
+    def __str__(self):
+        return f'{self.from_user} -> {self.to_user}'
