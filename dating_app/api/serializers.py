@@ -28,4 +28,5 @@ class UserSerializer(serializers.ModelSerializer):
             gender=validated_data['gender'],
             email=validated_data['email']
         )
+        user.process_avatar()
         return user
