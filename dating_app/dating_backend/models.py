@@ -1,18 +1,27 @@
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
 
-class Member(models.Model):
-    GENDER_CHOICES = (
-        ('M', 'Мужской'),
-        ('F', 'Женский'),
-        ('O', 'Другой'),
-    )
+class User(AbstractUser):
+    MALE = 'M'
+    FEMALE = 'F'
+    GENDER_CHOICES = [
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+    ]
 
     avatar = models.ImageField(upload_to='avatars/')
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField()
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+    email = models.EmailField(unique=True)
+    groups = models.ManyToManyField(
+        Group,
+        blank=True,
+        related_name='custom_user_set'
+        )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        blank=True,
+        related_name='custom_user_set'
+        )
