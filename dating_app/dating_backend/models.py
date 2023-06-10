@@ -4,6 +4,21 @@ from PIL import Image
 
 
 class User(AbstractUser):
+    """
+    Пользователь приложения.
+
+    Поля:
+    - avatar: Фотография пользователя.
+    - first_name: Имя пользователя.
+    - last_name: Фамилия пользователя.
+    - gender: Пол пользователя.
+    - email: Email пользователя.
+    - groups: Группы, к которым принадлежит пользователь.
+    - user_permissions: Права доступа пользователя.
+    - latitude: Широта местоположения пользователя.
+    - longitude: Долгота местоположения пользователя.
+    """
+
     MALE = 'M'
     FEMALE = 'F'
     GENDER_CHOICES = [
@@ -26,8 +41,15 @@ class User(AbstractUser):
         blank=True,
         related_name='custom_user_set'
         )
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     def process_avatar(self):
+        """
+        Обработка аватара пользователя.
+        Функция открывает изображение аватара и добавляет на него водяной знак.
+        Результат сохраняется в файле аватара.
+        """
         image = Image.open(self.avatar)
         watermark = Image.open('static/img/watermark.png')
         watermark = watermark.resize((50, 50))
@@ -41,13 +63,36 @@ class User(AbstractUser):
         image.save(self.avatar.path)
 
     def check_mutual_sympathy(self, other_user):
+        """
+        Проверка взаимной симпатии между текущим пользователем и другим.
+        Функция проверяет, существует ли запись о взаимной симпатии между
+        текущим пользователем и другим пользователем в модели LikedUsers.
+        Аргументы:
+        - other_user: Пользователь, с которым проверяется взаимная симпатия.
+        Возвращает:
+        True, если существует взаимная симпатия, иначе False.
+        """
         return LikedUsers.objects.filter(
-            from_user=self, to_user=other_user).exists() and \
-               LikedUsers.objects.filter(
-            from_user=other_user, to_user=self).exists()
+            from_user=self,
+            to_user=other_user
+        ).exists() and LikedUsers.objects.filter(
+            from_user=other_user,
+            to_user=self
+        ).exists()
 
 
 class LikedUsers(models.Model):
+    """
+    Модель для хранения информации о взаимной симпатии пользователей.
+    Поля:
+    - from_user: Пользователь, инициирующий симпатию.
+    - to_user: Пользователь, к которому проявляют симпатию.
+    Метаданные:
+    - unique_together: Пара (from_user, to_user) должна быть уникальной.
+    Методы:
+    - __str__: Возвращает строковое представление объекта.
+    """
+
     from_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='liked_users_sent')
     to_user = models.ForeignKey(
