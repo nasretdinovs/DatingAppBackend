@@ -2,7 +2,8 @@ from api.serializers import UserCreateSerializer, UserSerializer
 from dating_backend.models import LikedUsers, User
 from django.conf import settings
 from django.core.mail import send_mail
-from rest_framework import generics, status, viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, generics, status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,22 +14,12 @@ class UserCreateView(generics.CreateAPIView):
     serializer_class = UserCreateSerializer
 
 
-class UserViewSet(viewsets.ViewSet):
-    def list(self, request):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
-
-    def create(self, request):
-        serializer = UserSerializer()
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['gender', 'first_name', 'last_name']
+    search_fields = ['first_name', 'last_name']
 
 
 class UserMatchView(generics.CreateAPIView):
@@ -60,24 +51,26 @@ class UserMatchView(generics.CreateAPIView):
                     f'Вы понравились {target_user.first_name}! '
                     f'Почта участника: {target_user.email}'
                 )
+                print('Письмо ушло 1!')
                 send_mail(
                     'Взаимная симпатия',
                     current_user_message,
                     settings.EMAIL_HOST_USER,
                     [current_user_email]
-                    )
+                )
 
                 target_user_email = target_user.email
                 target_user_message = (
                     f'Вы понравились {current_user.first_name}! '
                     f'Почта участника: {current_user.email}'
                 )
+                print('Письмо ушло 2!')
                 send_mail(
                     'Взаимная симпатия',
                     target_user_message,
                     settings.EMAIL_HOST_USER,
                     [target_user_email]
-                    )
+                )
 
                 return Response(status=status.HTTP_200_OK)
             else:

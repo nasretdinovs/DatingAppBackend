@@ -1,13 +1,12 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import UserCreateView, UserMatchView, UserViewSet
+from .views import UserCreateView, UserListView, UserMatchView
 
 app_name = 'api'
 
 
 router = DefaultRouter()
-router.register(r'clients', UserViewSet, basename='user')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -17,4 +16,5 @@ urlpatterns = [
         UserMatchView.as_view(),
         name='match-user'
         ),
+    path('list/', UserListView.as_view(), name='user-list'),
 ]
