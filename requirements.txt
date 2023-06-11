@@ -9,6 +9,7 @@ inflection==0.5.1
 isort==5.12.0
 jsonschema==4.17.3
 mccabe==0.7.0
+mysqlclient==2.1.1
 Pillow==9.5.0
 psycopg2==2.9.6
 pycodestyle==2.10.0

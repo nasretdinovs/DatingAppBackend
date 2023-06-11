@@ -19,7 +19,10 @@ SECRET_KEY = 'django-insecure-^5ppvu6-hp%0xt)r#mikd1u7e55tv84c8e-d81f&fszc!j6r%x
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    os.getenv('PUBLIC_HOST', default='*'),
+    'http://datingappbackend.pythonanywhere.com/',
+    'datingappbackend.pythonanywhere.com/',
+    'localhost',
+    '127.0.0.1'
 ]
 
 AUTH_USER_MODEL = 'dating_backend.User'
@@ -80,12 +83,12 @@ WSGI_APPLICATION = 'dating_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.mysql'),
         'NAME': os.getenv('DB_NAME', default='dating_db'),
-        'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='password'),
+        'USER': os.getenv('DB_USER', default='user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', default='password'),
         'HOST': os.getenv('DB_HOST', default='localhost'),
-        'PORT': os.getenv('DB_PORT', default='5432')
+        'PORT': os.getenv('DB_PORT', default='3306')
     }
 }
 
@@ -124,6 +127,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
