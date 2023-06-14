@@ -26,7 +26,7 @@ class User(AbstractUser):
         (FEMALE, 'Female'),
     ]
 
-    avatar = models.ImageField(upload_to='static/avatars/')
+    avatar = models.ImageField(upload_to='avatars/')
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)

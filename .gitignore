@@ -161,6 +161,8 @@ cython_debug/
 
 .vscode/
 
-# Static
-dating_app/static/avatars/
+# Static and Media
+dating_app/media/
 
+# Draft file
+draft.py
